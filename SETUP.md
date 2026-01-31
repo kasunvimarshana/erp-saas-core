@@ -6,7 +6,7 @@ This guide will help you set up and run the ERP SaaS Core platform on your local
 
 Ensure you have the following installed:
 
-- **PHP**: >= 8.3
+- **PHP**: >= 8.1 (8.3 recommended)
 - **Composer**: >= 2.0
 - **Node.js**: >= 20.x
 - **NPM**: >= 10.x

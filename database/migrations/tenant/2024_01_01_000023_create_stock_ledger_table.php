@@ -47,33 +47,20 @@ return new class extends Migration
             $table->index(['reference_type', 'reference_id']);
         });
 
-        Schema::create('warehouses', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('tenant_id')->constrained()->onDelete('cascade');
-            $table->foreignId('branch_id')->constrained()->onDelete('cascade');
-            $table->string('name');
-            $table->string('code')->unique();
-            $table->text('address')->nullable();
-            $table->string('manager_name')->nullable();
-            $table->string('contact_phone')->nullable();
-            $table->boolean('is_active')->default(true);
-            $table->timestamps();
-        });
-
-        Schema::create('stock_locations', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('warehouse_id')->constrained()->onDelete('cascade');
-            $table->string('location_code');
-            $table->string('aisle')->nullable();
-            $table->string('rack')->nullable();
-            $table->string('shelf')->nullable();
-            $table->string('bin')->nullable();
-            $table->timestamps();
-            
-            $table->unique(['warehouse_id', 'location_code']);
-        });
-
         // Create a view for current stock levels (computed from append-only ledger)
+        // Note: The view syntax is compatible with both PostgreSQL and MySQL
+        $this->createStockSummaryView();
+    }
+
+    /**
+     * Create stock summary view with cross-database compatibility.
+     */
+    protected function createStockSummaryView(): void
+    {
+        $driver = config('database.default');
+        $connection = config("database.connections.{$driver}");
+        
+        // Compatible view for both PostgreSQL and MySQL
         DB::statement("
             CREATE OR REPLACE VIEW stock_summary AS
             SELECT 
@@ -102,8 +89,6 @@ return new class extends Migration
     public function down(): void
     {
         DB::statement("DROP VIEW IF EXISTS stock_summary");
-        Schema::dropIfExists('stock_locations');
-        Schema::dropIfExists('warehouses');
         Schema::dropIfExists('stock_ledger');
     }
 };
