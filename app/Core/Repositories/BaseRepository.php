@@ -6,6 +6,11 @@ use App\Core\Interfaces\RepositoryInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Builder;
+use Spatie\QueryBuilder\QueryBuilder;
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\AllowedSort;
+use Spatie\QueryBuilder\AllowedInclude;
 
 /**
  * Base Repository Implementation
@@ -122,6 +127,92 @@ abstract class BaseRepository implements RepositoryInterface
         }
         
         return $query->first();
+    }
+
+    /**
+     * Advanced query with filtering, sorting, includes, and pagination.
+     * 
+     * This method leverages Spatie Query Builder to provide:
+     * - Field-level and global search/filtering
+     * - Multi-field sorting
+     * - Sparse field selection
+     * - Configurable eager loading of relations
+     * 
+     * @param array $config Configuration array with:
+     *   - 'allowedFilters' => array of allowed filters (strings or AllowedFilter instances)
+     *   - 'allowedSorts' => array of allowed sorts (strings or AllowedSort instances)
+     *   - 'allowedIncludes' => array of allowed includes (strings or AllowedInclude instances)
+     *   - 'allowedFields' => array of allowed fields for sparse fieldsets
+     *   - 'defaultSort' => string default sort field (e.g., '-created_at')
+     *   - 'perPage' => int default items per page (default: 15)
+     *   - 'globalSearch' => array of fields to search globally
+     * @return QueryBuilder
+     */
+    public function queryWithFilters(array $config = []): QueryBuilder
+    {
+        $query = QueryBuilder::for($this->model);
+
+        // Apply allowed filters
+        if (!empty($config['allowedFilters'])) {
+            $query->allowedFilters($config['allowedFilters']);
+        }
+
+        // Apply allowed sorts
+        if (!empty($config['allowedSorts'])) {
+            $query->allowedSorts($config['allowedSorts']);
+        }
+
+        // Apply allowed includes
+        if (!empty($config['allowedIncludes'])) {
+            $query->allowedIncludes($config['allowedIncludes']);
+        }
+
+        // Apply allowed fields for sparse fieldsets
+        if (!empty($config['allowedFields'])) {
+            $query->allowedFields($config['allowedFields']);
+        }
+
+        // Apply default sort
+        if (!empty($config['defaultSort'])) {
+            $query->defaultSort($config['defaultSort']);
+        }
+
+        // Apply global search if configured
+        if (!empty($config['globalSearch']) && request()->has('search')) {
+            $searchTerm = request('search');
+            $query->where(function ($q) use ($config, $searchTerm) {
+                foreach ($config['globalSearch'] as $field) {
+                    $q->orWhere($field, 'LIKE', "%{$searchTerm}%");
+                }
+            });
+        }
+
+        return $query;
+    }
+
+    /**
+     * Get paginated results with advanced query capabilities.
+     * 
+     * @param array $config Query configuration
+     * @return LengthAwarePaginator
+     */
+    public function paginateWithFilters(array $config = []): LengthAwarePaginator
+    {
+        $perPage = $config['perPage'] ?? request('per_page', 15);
+        $query = $this->queryWithFilters($config);
+        
+        return $query->paginate($perPage)->appends(request()->query());
+    }
+
+    /**
+     * Get all results with advanced query capabilities.
+     * 
+     * @param array $config Query configuration
+     * @return Collection
+     */
+    public function getAllWithFilters(array $config = []): Collection
+    {
+        return $this->queryWithFilters($config)->get();
     }
 
     /**

@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Modules\CRM\Http\Controllers\CustomerController;
+use App\Modules\CRM\Http\Controllers\CustomerEnhancedController;
 
 /*
 |--------------------------------------------------------------------------
@@ -56,11 +57,14 @@ Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
         return $request->user();
     });
 
-    // CRM Module
+    // CRM Module - Original implementation
     Route::prefix('customers')->group(function () {
         Route::get('/search', [CustomerController::class, 'search']);
         Route::apiResource('/', CustomerController::class)->parameters(['' => 'id']);
     });
+
+    // CRM Module - Enhanced CRUD Framework implementation
+    Route::apiResource('customers-enhanced', CustomerEnhancedController::class);
 
     // Inventory Module (to be implemented)
     // Route::prefix('inventory')->group(function () {
