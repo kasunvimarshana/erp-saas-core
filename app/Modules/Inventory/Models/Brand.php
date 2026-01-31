@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Brand Model
- * 
+ *
  * Product brand/manufacturer management.
  */
 class Brand extends Model

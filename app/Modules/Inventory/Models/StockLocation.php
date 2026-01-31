@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * Stock Location Model
- * 
+ *
  * Detailed bin/shelf locations within warehouses.
  */
 class StockLocation extends Model
@@ -40,7 +40,7 @@ class StockLocation extends Model
             $this->shelf ? "S:{$this->shelf}" : null,
             $this->bin ? "B:{$this->bin}" : null,
         ]);
-        
+
         return implode('-', $parts) ?: $this->location_code;
     }
 }

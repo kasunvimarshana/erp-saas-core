@@ -7,7 +7,7 @@ use App\Modules\Inventory\Models\Product;
 
 /**
  * Product Repository
- * 
+ *
  * Handles data access for product operations.
  */
 class ProductRepository extends BaseRepository
@@ -19,9 +19,6 @@ class ProductRepository extends BaseRepository
 
     /**
      * Find product by SKU.
-     *
-     * @param string $sku
-     * @return Product|null
      */
     public function findBySku(string $sku): ?Product
     {
@@ -31,7 +28,6 @@ class ProductRepository extends BaseRepository
     /**
      * Get products by category.
      *
-     * @param int $categoryId
      * @return \Illuminate\Database\Eloquent\Collection
      */
     public function getByCategory(int $categoryId)
@@ -42,7 +38,6 @@ class ProductRepository extends BaseRepository
     /**
      * Get products by brand.
      *
-     * @param int $brandId
      * @return \Illuminate\Database\Eloquent\Collection
      */
     public function getByBrand(int $brandId)
@@ -67,7 +62,6 @@ class ProductRepository extends BaseRepository
     /**
      * Search products.
      *
-     * @param string $query
      * @return \Illuminate\Database\Eloquent\Collection
      */
     public function search(string $query)

@@ -7,7 +7,7 @@ use App\Modules\Tenant\Models\Tenant;
 
 /**
  * Tenant Repository
- * 
+ *
  * Handles data access for tenant operations.
  */
 class TenantRepository extends BaseRepository
@@ -19,9 +19,6 @@ class TenantRepository extends BaseRepository
 
     /**
      * Find tenant by slug.
-     *
-     * @param string $slug
-     * @return Tenant|null
      */
     public function findBySlug(string $slug): ?Tenant
     {
@@ -30,9 +27,6 @@ class TenantRepository extends BaseRepository
 
     /**
      * Find tenant by domain.
-     *
-     * @param string $domain
-     * @return Tenant|null
      */
     public function findByDomain(string $domain): ?Tenant
     {

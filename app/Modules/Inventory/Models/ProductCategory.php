@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Product Category Model
- * 
+ *
  * Hierarchical product categorization.
  */
 class ProductCategory extends Model

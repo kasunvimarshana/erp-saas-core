@@ -3,13 +3,13 @@
 namespace App\Modules\Inventory\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Product Model
- * 
+ *
  * Manages products with SKU/variant support.
  * Includes inventory tracking, batch/lot/serial tracking, and multi-attribute support.
  */

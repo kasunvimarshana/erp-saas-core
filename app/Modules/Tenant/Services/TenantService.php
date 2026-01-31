@@ -3,13 +3,13 @@
 namespace App\Modules\Tenant\Services;
 
 use App\Core\Services\BaseService;
-use App\Modules\Tenant\Repositories\TenantRepository;
 use App\Modules\Tenant\Models\Tenant;
+use App\Modules\Tenant\Repositories\TenantRepository;
 use Illuminate\Support\Str;
 
 /**
  * Tenant Service
- * 
+ *
  * Handles business logic for tenant operations.
  */
 class TenantService extends BaseService
@@ -21,20 +21,17 @@ class TenantService extends BaseService
 
     /**
      * Create a new tenant with subscription.
-     *
-     * @param array $data
-     * @return Tenant
      */
     public function createTenant(array $data): Tenant
     {
         return $this->transaction(function () use ($data) {
             // Generate slug if not provided
-            if (!isset($data['slug'])) {
+            if (! isset($data['slug'])) {
                 $data['slug'] = Str::slug($data['name']);
             }
 
             // Set trial period if not subscribed immediately
-            if (!isset($data['subscribed_at'])) {
+            if (! isset($data['subscribed_at'])) {
                 $data['trial_ends_at'] = now()->addDays(14); // 14-day trial
             }
 
@@ -47,28 +44,22 @@ class TenantService extends BaseService
 
     /**
      * Find tenant by slug or domain.
-     *
-     * @param string $identifier
-     * @return Tenant|null
      */
     public function findTenant(string $identifier): ?Tenant
     {
         // Try to find by domain first
         $tenant = $this->repository->findByDomain($identifier);
-        
+
         // If not found, try by slug
-        if (!$tenant) {
+        if (! $tenant) {
             $tenant = $this->repository->findBySlug($identifier);
         }
-        
+
         return $tenant;
     }
 
     /**
      * Suspend a tenant.
-     *
-     * @param int $id
-     * @return bool
      */
     public function suspendTenant(int $id): bool
     {
@@ -77,9 +68,6 @@ class TenantService extends BaseService
 
     /**
      * Activate a tenant.
-     *
-     * @param int $id
-     * @return bool
      */
     public function activateTenant(int $id): bool
     {

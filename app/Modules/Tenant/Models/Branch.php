@@ -3,13 +3,13 @@
 namespace App\Modules\Tenant\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Branch Model
- * 
+ *
  * Represents a physical location/branch of an organization.
  * Supports multi-branch operations with location-based data.
  */
@@ -93,6 +93,7 @@ class Branch extends Model
                 'lng' => (float) $this->longitude,
             ];
         }
+
         return null;
     }
 }

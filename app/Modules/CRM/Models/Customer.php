@@ -3,13 +3,13 @@
 namespace App\Modules\CRM\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Customer Model
- * 
+ *
  * Manages customer data with support for both individual and business customers.
  * Includes credit limits, payment terms, and multi-address support.
  */
@@ -87,6 +87,7 @@ class Customer extends Model
         if ($this->type === 'individual') {
             return trim("{$this->first_name} {$this->last_name}");
         }
+
         return $this->company_name;
     }
 

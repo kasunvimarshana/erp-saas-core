@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * Vehicle Service History Model
- * 
+ *
  * Centralized service history across all branches.
  * Provides complete vehicle maintenance trail.
  */

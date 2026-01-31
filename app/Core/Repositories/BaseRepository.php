@@ -3,27 +3,27 @@
 namespace App\Core\Repositories;
 
 use App\Core\Interfaces\RepositoryInterface;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\AllowedInclude;
+use Spatie\QueryBuilder\AllowedSort;
+use Spatie\QueryBuilder\QueryBuilder;
 
 /**
  * Base Repository Implementation
- * 
+ *
  * Implements the Repository pattern for data access abstraction.
  * Provides consistent CRUD operations with automatic tenant scoping.
  */
 abstract class BaseRepository implements RepositoryInterface
 {
-    /**
-     * @var Model
-     */
     protected Model $model;
 
     /**
      * BaseRepository constructor.
-     *
-     * @param Model $model
      */
     public function __construct(Model $model)
     {
@@ -76,6 +76,7 @@ abstract class BaseRepository implements RepositoryInterface
     public function update(int $id, array $attributes): bool
     {
         $model = $this->findOrFail($id);
+
         return $model->update($attributes);
     }
 
@@ -85,6 +86,7 @@ abstract class BaseRepository implements RepositoryInterface
     public function delete(int $id): bool
     {
         $model = $this->findOrFail($id);
+
         return $model->delete();
     }
 
@@ -94,7 +96,7 @@ abstract class BaseRepository implements RepositoryInterface
     public function findWhere(array $criteria, array $columns = ['*']): Collection
     {
         $query = $this->model->select($columns);
-        
+
         foreach ($criteria as $key => $value) {
             if (is_array($value)) {
                 $query->whereIn($key, $value);
@@ -102,7 +104,7 @@ abstract class BaseRepository implements RepositoryInterface
                 $query->where($key, $value);
             }
         }
-        
+
         return $query->get();
     }
 
@@ -112,7 +114,7 @@ abstract class BaseRepository implements RepositoryInterface
     public function findWhereFirst(array $criteria, array $columns = ['*']): ?Model
     {
         $query = $this->model->select($columns);
-        
+
         foreach ($criteria as $key => $value) {
             if (is_array($value)) {
                 $query->whereIn($key, $value);
@@ -120,14 +122,95 @@ abstract class BaseRepository implements RepositoryInterface
                 $query->where($key, $value);
             }
         }
-        
+
         return $query->first();
     }
 
     /**
-     * Get the model instance.
+     * Advanced query with filtering, sorting, includes, and pagination.
      *
-     * @return Model
+     * This method leverages Spatie Query Builder to provide:
+     * - Field-level and global search/filtering
+     * - Multi-field sorting
+     * - Sparse field selection
+     * - Configurable eager loading of relations
+     *
+     * @param  array  $config  Configuration array with:
+     *                         - 'allowedFilters' => array of allowed filters (strings or AllowedFilter instances)
+     *                         - 'allowedSorts' => array of allowed sorts (strings or AllowedSort instances)
+     *                         - 'allowedIncludes' => array of allowed includes (strings or AllowedInclude instances)
+     *                         - 'allowedFields' => array of allowed fields for sparse fieldsets
+     *                         - 'defaultSort' => string default sort field (e.g., '-created_at')
+     *                         - 'perPage' => int default items per page (default: 15)
+     *                         - 'globalSearch' => array of fields to search globally
+     */
+    public function queryWithFilters(array $config = []): QueryBuilder
+    {
+        $query = QueryBuilder::for($this->model);
+
+        // Apply allowed filters
+        if (! empty($config['allowedFilters'])) {
+            $query->allowedFilters($config['allowedFilters']);
+        }
+
+        // Apply allowed sorts
+        if (! empty($config['allowedSorts'])) {
+            $query->allowedSorts($config['allowedSorts']);
+        }
+
+        // Apply allowed includes
+        if (! empty($config['allowedIncludes'])) {
+            $query->allowedIncludes($config['allowedIncludes']);
+        }
+
+        // Apply allowed fields for sparse fieldsets
+        if (! empty($config['allowedFields'])) {
+            $query->allowedFields($config['allowedFields']);
+        }
+
+        // Apply default sort
+        if (! empty($config['defaultSort'])) {
+            $query->defaultSort($config['defaultSort']);
+        }
+
+        // Apply global search if configured
+        if (! empty($config['globalSearch']) && request()->has('search')) {
+            $searchTerm = request('search');
+            $query->where(function ($q) use ($config, $searchTerm) {
+                foreach ($config['globalSearch'] as $field) {
+                    $q->orWhere($field, 'LIKE', "%{$searchTerm}%");
+                }
+            });
+        }
+
+        return $query;
+    }
+
+    /**
+     * Get paginated results with advanced query capabilities.
+     *
+     * @param  array  $config  Query configuration
+     */
+    public function paginateWithFilters(array $config = []): LengthAwarePaginator
+    {
+        $perPage = $config['perPage'] ?? request('per_page', 15);
+        $query = $this->queryWithFilters($config);
+
+        return $query->paginate($perPage)->appends(request()->query());
+    }
+
+    /**
+     * Get all results with advanced query capabilities.
+     *
+     * @param  array  $config  Query configuration
+     */
+    public function getAllWithFilters(array $config = []): Collection
+    {
+        return $this->queryWithFilters($config)->get();
+    }
+
+    /**
+     * Get the model instance.
      */
     public function getModel(): Model
     {
@@ -137,12 +220,12 @@ abstract class BaseRepository implements RepositoryInterface
     /**
      * Set the model instance.
      *
-     * @param Model $model
      * @return $this
      */
     public function setModel(Model $model): self
     {
         $this->model = $model;
+
         return $this;
     }
 }

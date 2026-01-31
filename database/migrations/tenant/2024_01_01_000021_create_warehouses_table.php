@@ -33,7 +33,7 @@ return new class extends Migration
             $table->string('shelf')->nullable();
             $table->string('bin')->nullable();
             $table->timestamps();
-            
+
             $table->unique(['warehouse_id', 'location_code']);
         });
     }

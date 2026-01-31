@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * Warehouse Model
- * 
+ *
  * Manages warehouse locations within branches.
  */
 class Warehouse extends Model

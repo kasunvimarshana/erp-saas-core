@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * Customer Contact Model
- * 
+ *
  * Manages additional contacts for business customers.
  */
 class CustomerContact extends Model
