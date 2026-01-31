@@ -6,7 +6,7 @@ use Illuminate\Support\ServiceProvider;
 
 /**
  * Repository Service Provider
- * 
+ *
  * Binds repositories and services to the container.
  * Enables dependency injection for clean architecture.
  */
@@ -22,7 +22,7 @@ class RepositoryServiceProvider extends ServiceProvider
             \App\Modules\Tenant\Repositories\TenantRepository::class,
             function ($app) {
                 return new \App\Modules\Tenant\Repositories\TenantRepository(
-                    new \App\Modules\Tenant\Models\Tenant()
+                    new \App\Modules\Tenant\Models\Tenant
                 );
             }
         );
@@ -41,7 +41,7 @@ class RepositoryServiceProvider extends ServiceProvider
             \App\Modules\CRM\Repositories\CustomerRepository::class,
             function ($app) {
                 return new \App\Modules\CRM\Repositories\CustomerRepository(
-                    new \App\Modules\CRM\Models\Customer()
+                    new \App\Modules\CRM\Models\Customer
                 );
             }
         );
@@ -60,7 +60,7 @@ class RepositoryServiceProvider extends ServiceProvider
             \App\Modules\Inventory\Repositories\ProductRepository::class,
             function ($app) {
                 return new \App\Modules\Inventory\Repositories\ProductRepository(
-                    new \App\Modules\Inventory\Models\Product()
+                    new \App\Modules\Inventory\Models\Product
                 );
             }
         );
@@ -69,7 +69,7 @@ class RepositoryServiceProvider extends ServiceProvider
             \App\Modules\Inventory\Repositories\StockLedgerRepository::class,
             function ($app) {
                 return new \App\Modules\Inventory\Repositories\StockLedgerRepository(
-                    new \App\Modules\Inventory\Models\StockLedger()
+                    new \App\Modules\Inventory\Models\StockLedger
                 );
             }
         );

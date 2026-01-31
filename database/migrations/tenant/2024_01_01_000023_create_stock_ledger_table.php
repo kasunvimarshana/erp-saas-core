@@ -8,7 +8,7 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
-     * 
+     *
      * Append-only stock ledger for immutable audit trails.
      * Supports FIFO/FEFO, batch/lot/serial tracking, and expiry handling.
      */
@@ -21,8 +21,8 @@ return new class extends Migration
             $table->foreignId('branch_id')->constrained()->onDelete('restrict');
             $table->foreignId('warehouse_id')->nullable()->constrained()->onDelete('restrict');
             $table->enum('transaction_type', [
-                'purchase', 'sale', 'transfer_in', 'transfer_out', 
-                'adjustment_in', 'adjustment_out', 'return', 'production'
+                'purchase', 'sale', 'transfer_in', 'transfer_out',
+                'adjustment_in', 'adjustment_out', 'return', 'production',
             ]);
             $table->string('reference_type')->nullable(); // e.g., 'App\Models\PurchaseOrder'
             $table->unsignedBigInteger('reference_id')->nullable();
@@ -37,7 +37,7 @@ return new class extends Migration
             $table->text('remarks')->nullable();
             $table->foreignId('created_by')->constrained('users')->onDelete('restrict');
             $table->timestamp('created_at')->useCurrent();
-            
+
             // Indexes for performance
             $table->index(['tenant_id', 'product_id', 'branch_id']);
             $table->index(['tenant_id', 'created_at']);
@@ -59,7 +59,7 @@ return new class extends Migration
     {
         $driver = config('database.default');
         $connection = config("database.connections.{$driver}");
-        
+
         // Compatible view for both PostgreSQL and MySQL
         DB::statement("
             CREATE OR REPLACE VIEW stock_summary AS
@@ -88,7 +88,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        DB::statement("DROP VIEW IF EXISTS stock_summary");
+        DB::statement('DROP VIEW IF EXISTS stock_summary');
         Schema::dropIfExists('stock_ledger');
     }
 };

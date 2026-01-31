@@ -7,6 +7,7 @@ use Illuminate\Foundation\Http\FormRequest;
 /**
  * @OA\Schema(
  *     schema="UpdateCustomerRequest",
+ *
  *     @OA\Property(property="type", type="string", enum={"individual", "business"}),
  *     @OA\Property(property="first_name", type="string"),
  *     @OA\Property(property="last_name", type="string"),

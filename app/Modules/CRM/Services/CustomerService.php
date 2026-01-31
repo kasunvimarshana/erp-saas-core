@@ -3,12 +3,12 @@
 namespace App\Modules\CRM\Services;
 
 use App\Core\Services\BaseService;
-use App\Modules\CRM\Repositories\CustomerRepository;
 use App\Modules\CRM\Models\Customer;
+use App\Modules\CRM\Repositories\CustomerRepository;
 
 /**
  * Customer Service
- * 
+ *
  * Handles business logic for customer operations.
  */
 class CustomerService extends BaseService
@@ -20,15 +20,12 @@ class CustomerService extends BaseService
 
     /**
      * Create a new customer.
-     *
-     * @param array $data
-     * @return Customer
      */
     public function createCustomer(array $data): Customer
     {
         return $this->transaction(function () use ($data) {
             // Generate customer code if not provided
-            if (!isset($data['customer_code'])) {
+            if (! isset($data['customer_code'])) {
                 $data['customer_code'] = $this->generateCustomerCode();
             }
 
@@ -53,8 +50,6 @@ class CustomerService extends BaseService
 
     /**
      * Generate unique customer code.
-     *
-     * @return string
      */
     protected function generateCustomerCode(): string
     {
@@ -65,13 +60,13 @@ class CustomerService extends BaseService
             '0',
             STR_PAD_LEFT
         );
-        return $prefix . $number;
+
+        return $prefix.$number;
     }
 
     /**
      * Search customers.
      *
-     * @param string $query
      * @return \Illuminate\Database\Eloquent\Collection
      */
     public function searchCustomers(string $query)
@@ -81,18 +76,15 @@ class CustomerService extends BaseService
 
     /**
      * Get customer with complete profile.
-     *
-     * @param int $id
-     * @return Customer|null
      */
     public function getCustomerProfile(int $id): ?Customer
     {
         $customer = $this->repository->find($id);
-        
+
         if ($customer) {
             $customer->load(['contacts', 'vehicles.serviceHistory']);
         }
-        
+
         return $customer;
     }
 }

@@ -3,13 +3,13 @@
 namespace App\Modules\CRM\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Vehicle Model
- * 
+ *
  * Manages vehicle information with centralized cross-branch service history.
  * Supports comprehensive vehicle tracking and maintenance records.
  */

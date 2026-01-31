@@ -2,15 +2,15 @@
 
 namespace App\Modules\Inventory\Services;
 
-use App\Core\Services\BaseService;
-use App\Modules\Inventory\Repositories\StockLedgerRepository;
-use App\Modules\Inventory\Repositories\ProductRepository;
-use App\Modules\Inventory\Models\StockLedger;
 use App\Core\Exceptions\ServiceException;
+use App\Core\Services\BaseService;
+use App\Modules\Inventory\Models\StockLedger;
+use App\Modules\Inventory\Repositories\ProductRepository;
+use App\Modules\Inventory\Repositories\StockLedgerRepository;
 
 /**
  * Stock Management Service
- * 
+ *
  * Handles stock movement operations with FIFO/FEFO logic.
  * All operations are append-only for immutable audit trails.
  */
@@ -28,16 +28,13 @@ class StockManagementService extends BaseService
 
     /**
      * Record incoming stock (purchase, transfer in, etc.)
-     *
-     * @param array $data
-     * @return StockLedger
      */
     public function recordIncomingStock(array $data): StockLedger
     {
         return $this->transaction(function () use ($data) {
             // Validate product exists
             $product = $this->productRepository->find($data['product_id']);
-            if (!$product) {
+            if (! $product) {
                 throw new ServiceException('Product not found');
             }
 
@@ -47,7 +44,7 @@ class StockManagementService extends BaseService
             }
 
             // Ensure transaction type is incoming
-            if (!in_array($data['transaction_type'], ['purchase', 'transfer_in', 'adjustment_in', 'return', 'production'])) {
+            if (! in_array($data['transaction_type'], ['purchase', 'transfer_in', 'adjustment_in', 'return', 'production'])) {
                 throw new ServiceException('Invalid transaction type for incoming stock');
             }
 
@@ -58,14 +55,13 @@ class StockManagementService extends BaseService
     /**
      * Record outgoing stock (sale, transfer out, etc.) with FIFO/FEFO.
      *
-     * @param array $data
      * @return array Array of StockLedger entries
      */
     public function recordOutgoingStock(array $data): array
     {
         return $this->transaction(function () use ($data) {
             $product = $this->productRepository->find($data['product_id']);
-            if (!$product) {
+            if (! $product) {
                 throw new ServiceException('Product not found');
             }
 
@@ -135,11 +131,6 @@ class StockManagementService extends BaseService
 
     /**
      * Get current stock level.
-     *
-     * @param int $productId
-     * @param int $branchId
-     * @param int|null $warehouseId
-     * @return float
      */
     public function getCurrentStockLevel(int $productId, int $branchId, ?int $warehouseId = null): float
     {
@@ -148,16 +139,11 @@ class StockManagementService extends BaseService
 
     /**
      * Get stock valuation.
-     *
-     * @param int $productId
-     * @param int $branchId
-     * @param int|null $warehouseId
-     * @return array
      */
     public function getStockValuation(int $productId, int $branchId, ?int $warehouseId = null): array
     {
         $batches = $this->repository->getStockByBatch($productId, $branchId, $warehouseId);
-        
+
         $totalQty = 0;
         $totalValue = 0;
 
@@ -175,10 +161,6 @@ class StockManagementService extends BaseService
 
     /**
      * Get expiry alerts.
-     *
-     * @param int $branchId
-     * @param int $days
-     * @return array
      */
     public function getExpiryAlerts(int $branchId, int $days = 30): array
     {

@@ -36,7 +36,7 @@ return new class extends Migration
             $table->json('metadata')->nullable();
             $table->timestamps();
             $table->softDeletes();
-            
+
             $table->index(['tenant_id', 'customer_code']);
             $table->index(['tenant_id', 'email']);
         });

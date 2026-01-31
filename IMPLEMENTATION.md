@@ -11,6 +11,21 @@ A production-ready, enterprise-grade ERP SaaS platform built with Laravel 10+ an
 - **SOLID Principles**: Maintainable, extensible, and testable code
 - **DRY & KISS**: Don't Repeat Yourself, Keep It Simple, Stupid
 
+### Dynamic CRUD Framework ✨ NEW
+A fully dynamic, configuration-driven CRUD framework providing:
+- **Global and field-level search** - Search across multiple fields or specific columns
+- **Advanced filtering** - Filter by exact match, partial match, ranges, or custom logic
+- **Relation-based filters** - Filter based on related model data
+- **Multi-field sorting** - Sort by multiple columns in ascending or descending order
+- **Sparse field selection** - Return only requested fields to optimize payload size
+- **Configurable eager loading** - Load related models on-demand with nested support
+- **Pagination** - Configurable page size with full metadata
+- **Tenant-aware** - Automatic tenant scoping through global scopes
+- **Secure** - Built-in validation and consistent error handling
+- **Scalable** - Configuration-driven, no hardcoded logic
+
+📖 See [CRUD_FRAMEWORK.md](./CRUD_FRAMEWORK.md) for complete documentation.
+
 ### Multi-Tenancy
 - Full tenant isolation with dedicated data scopes
 - Subscription-based access control
@@ -200,6 +215,49 @@ npm run dev
 ```
 
 ## 📚 Core Patterns
+
+### Dynamic CRUD Framework
+The platform includes a production-ready CRUD framework with advanced query capabilities:
+
+```php
+use App\Core\Http\Controllers\BaseCrudController;
+use Spatie\QueryBuilder\AllowedFilter;
+
+class YourController extends BaseCrudController
+{
+    protected function getQueryConfig(): array
+    {
+        return [
+            'allowedFilters' => [
+                'name',
+                AllowedFilter::exact('status'),
+                AllowedFilter::callback('has_items', fn($q, $v) => $q->has('items')),
+            ],
+            'allowedSorts' => ['name', 'created_at'],
+            'allowedIncludes' => ['organization', 'branch'],
+            'globalSearch' => ['name', 'email'],
+        ];
+    }
+    
+    protected function getValidationRules(string $action, $id = null): array
+    {
+        return ['name' => 'required|string|max:255'];
+    }
+}
+```
+
+Supports advanced queries:
+```http
+GET /api/v1/resources
+  ?filter[status]=active        # Field-level filtering
+  &search=john                  # Global search
+  &sort=-created_at,name        # Multi-field sorting
+  &include=organization,branch  # Eager loading
+  &fields[resources]=id,name    # Sparse fieldsets
+  &page[size]=20                # Pagination
+```
+
+📖 Complete documentation: [CRUD_FRAMEWORK.md](./CRUD_FRAMEWORK.md)
 
 ### Repository Pattern
 All data access goes through repositories extending `BaseRepository`:

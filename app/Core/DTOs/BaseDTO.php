@@ -7,7 +7,7 @@ use JsonSerializable;
 
 /**
  * Base Data Transfer Object
- * 
+ *
  * Provides type-safe data transfer between layers.
  * Ensures data integrity and validation.
  */
@@ -15,9 +15,6 @@ abstract class BaseDTO implements Arrayable, JsonSerializable
 {
     /**
      * Create DTO from array.
-     *
-     * @param array $data
-     * @return static
      */
     public static function fromArray(array $data): static
     {
@@ -27,8 +24,7 @@ abstract class BaseDTO implements Arrayable, JsonSerializable
     /**
      * Create DTO from request.
      *
-     * @param \Illuminate\Http\Request $request
-     * @return static
+     * @param  \Illuminate\Http\Request  $request
      */
     public static function fromRequest($request): static
     {
@@ -37,27 +33,23 @@ abstract class BaseDTO implements Arrayable, JsonSerializable
 
     /**
      * Convert DTO to array.
-     *
-     * @return array
      */
     public function toArray(): array
     {
         $reflection = new \ReflectionClass($this);
         $properties = $reflection->getProperties(\ReflectionProperty::IS_PUBLIC);
-        
+
         $data = [];
         foreach ($properties as $property) {
             $name = $property->getName();
             $data[$name] = $this->{$name};
         }
-        
+
         return $data;
     }
 
     /**
      * Specify data which should be serialized to JSON.
-     *
-     * @return array
      */
     public function jsonSerialize(): array
     {
@@ -66,8 +58,6 @@ abstract class BaseDTO implements Arrayable, JsonSerializable
 
     /**
      * Validate the DTO data.
-     *
-     * @return bool
      */
     abstract public function validate(): bool;
 }

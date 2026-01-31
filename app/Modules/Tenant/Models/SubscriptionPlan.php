@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Subscription Plan Model
- * 
+ *
  * Defines available subscription tiers and pricing.
  */
 class SubscriptionPlan extends Model

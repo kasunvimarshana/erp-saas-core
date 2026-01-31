@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('module')->nullable();
             $table->string('description')->nullable();
             $table->timestamps();
-            
+
             $table->unique(['name', 'guard_name']);
         });
 
@@ -29,7 +29,7 @@ return new class extends Migration
             $table->string('guard_name')->default('web');
             $table->string('description')->nullable();
             $table->timestamps();
-            
+
             $table->unique(['name', 'guard_name', 'tenant_id']);
         });
 
@@ -37,7 +37,7 @@ return new class extends Migration
             $table->foreignId('permission_id')->constrained()->onDelete('cascade');
             $table->string('model_type');
             $table->unsignedBigInteger('model_id');
-            
+
             $table->index(['model_id', 'model_type']);
             $table->primary(['permission_id', 'model_id', 'model_type'], 'model_has_permissions_permission_model_type_primary');
         });
@@ -46,7 +46,7 @@ return new class extends Migration
             $table->foreignId('role_id')->constrained()->onDelete('cascade');
             $table->string('model_type');
             $table->unsignedBigInteger('model_id');
-            
+
             $table->index(['model_id', 'model_type']);
             $table->primary(['role_id', 'model_id', 'model_type'], 'model_has_roles_role_model_type_primary');
         });
@@ -54,7 +54,7 @@ return new class extends Migration
         Schema::create('role_has_permissions', function (Blueprint $table) {
             $table->foreignId('permission_id')->constrained()->onDelete('cascade');
             $table->foreignId('role_id')->constrained()->onDelete('cascade');
-            
+
             $table->primary(['permission_id', 'role_id']);
         });
     }

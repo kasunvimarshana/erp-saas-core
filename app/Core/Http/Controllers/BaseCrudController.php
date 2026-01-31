@@ -2,8 +2,8 @@
 
 namespace App\Core\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Core\Services\BaseService;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -11,7 +11,7 @@ use Illuminate\Validation\ValidationException;
 
 /**
  * Base CRUD Controller
- * 
+ *
  * Provides a complete, production-ready CRUD implementation with:
  * - Advanced filtering (field-level and global search)
  * - Multi-field sorting
@@ -21,7 +21,7 @@ use Illuminate\Validation\ValidationException;
  * - Tenant-aware operations
  * - Consistent error handling
  * - Structured JSON responses
- * 
+ *
  * To use, extend this class and implement:
  * - getQueryConfig() - Define filters, sorts, includes, etc.
  * - getValidationRules() - Define create/update validation rules
@@ -30,15 +30,11 @@ abstract class BaseCrudController extends Controller
 {
     /**
      * The service instance.
-     *
-     * @var BaseService
      */
     protected BaseService $service;
 
     /**
      * BaseCrudController constructor.
-     *
-     * @param BaseService $service
      */
     public function __construct(BaseService $service)
     {
@@ -47,9 +43,9 @@ abstract class BaseCrudController extends Controller
 
     /**
      * Get query configuration for advanced filtering.
-     * 
+     *
      * Override this method to configure allowed filters, sorts, includes, etc.
-     * 
+     *
      * Example:
      * return [
      *     'allowedFilters' => [
@@ -66,16 +62,14 @@ abstract class BaseCrudController extends Controller
      *     'perPage' => 15,
      *     'globalSearch' => ['name', 'email', 'phone'],
      * ];
-     *
-     * @return array
      */
     abstract protected function getQueryConfig(): array;
 
     /**
      * Get validation rules for create and update operations.
-     * 
+     *
      * Override this method to define validation rules.
-     * 
+     *
      * Example:
      * return [
      *     'create' => [
@@ -88,15 +82,14 @@ abstract class BaseCrudController extends Controller
      *     ],
      * ];
      *
-     * @param string $action 'create' or 'update'
-     * @param mixed $id Resource ID for update operations
-     * @return array
+     * @param  string  $action  'create' or 'update'
+     * @param  mixed  $id  Resource ID for update operations
      */
     abstract protected function getValidationRules(string $action, $id = null): array;
 
     /**
      * Display a listing of the resource.
-     * 
+     *
      * Supports:
      * - ?filter[field]=value - Field-level filtering
      * - ?search=term - Global search across configured fields
@@ -104,9 +97,6 @@ abstract class BaseCrudController extends Controller
      * - ?include=relation1,relation2 - Eager load relations
      * - ?fields[table]=field1,field2 - Sparse fieldsets
      * - ?page[number]=1&page[size]=20 - Pagination
-     *
-     * @param Request $request
-     * @return JsonResponse
      */
     public function index(Request $request): JsonResponse
     {
@@ -122,9 +112,6 @@ abstract class BaseCrudController extends Controller
 
     /**
      * Store a newly created resource.
-     *
-     * @param Request $request
-     * @return JsonResponse
      */
     public function store(Request $request): JsonResponse
     {
@@ -142,15 +129,12 @@ abstract class BaseCrudController extends Controller
 
     /**
      * Display the specified resource.
-     *
-     * @param int $id
-     * @return JsonResponse
      */
     public function show(int $id): JsonResponse
     {
         try {
             $config = $this->getQueryConfig();
-            
+
             // Build query with includes if specified
             $query = $this->service->repository->queryWithFilters($config);
             $resource = $query->findOrFail($id);
@@ -165,10 +149,6 @@ abstract class BaseCrudController extends Controller
 
     /**
      * Update the specified resource.
-     *
-     * @param Request $request
-     * @param int $id
-     * @return JsonResponse
      */
     public function update(Request $request, int $id): JsonResponse
     {
@@ -178,6 +158,7 @@ abstract class BaseCrudController extends Controller
 
             if ($success) {
                 $resource = $this->service->repository->findOrFail($id);
+
                 return $this->successResponse($resource, 'Resource updated successfully');
             }
 
@@ -193,9 +174,6 @@ abstract class BaseCrudController extends Controller
 
     /**
      * Remove the specified resource.
-     *
-     * @param int $id
-     * @return JsonResponse
      */
     public function destroy(int $id): JsonResponse
     {
@@ -217,16 +195,14 @@ abstract class BaseCrudController extends Controller
     /**
      * Validate the request data.
      *
-     * @param Request $request
-     * @param string $action
-     * @param mixed $id
-     * @return array
+     * @param  mixed  $id
+     *
      * @throws ValidationException
      */
     protected function validateRequest(Request $request, string $action, $id = null): array
     {
         $rules = $this->getValidationRules($action, $id);
-        
+
         $validator = Validator::make($request->all(), $rules);
 
         if ($validator->fails()) {
@@ -239,10 +215,7 @@ abstract class BaseCrudController extends Controller
     /**
      * Return a success JSON response.
      *
-     * @param mixed $data
-     * @param string $message
-     * @param int $code
-     * @return JsonResponse
+     * @param  mixed  $data
      */
     protected function successResponse($data, string $message = 'Success', int $code = 200): JsonResponse
     {
@@ -255,10 +228,6 @@ abstract class BaseCrudController extends Controller
 
     /**
      * Return an error JSON response.
-     *
-     * @param string $message
-     * @param int $code
-     * @return JsonResponse
      */
     protected function errorResponse(string $message, int $code = 400): JsonResponse
     {
@@ -271,9 +240,6 @@ abstract class BaseCrudController extends Controller
 
     /**
      * Return a validation error JSON response.
-     *
-     * @param ValidationException $exception
-     * @return JsonResponse
      */
     protected function validationErrorResponse(ValidationException $exception): JsonResponse
     {

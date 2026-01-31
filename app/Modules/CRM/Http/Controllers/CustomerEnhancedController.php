@@ -11,7 +11,7 @@ use Spatie\QueryBuilder\AllowedSort;
 
 /**
  * Enhanced Customer Controller with Advanced CRUD Features
- * 
+ *
  * Demonstrates the complete CRUD framework with:
  * - Field-level filtering: ?filter[status]=active&filter[type]=individual
  * - Global search: ?search=john
@@ -19,7 +19,7 @@ use Spatie\QueryBuilder\AllowedSort;
  * - Eager loading: ?include=organization,branch,contacts,vehicles
  * - Sparse fieldsets: ?fields[customers]=id,name,email
  * - Pagination: ?page[number]=1&page[size]=20
- * 
+ *
  * @OA\Tag(
  *     name="Customers (Enhanced)",
  *     description="Enhanced customer management with advanced query features"
@@ -29,8 +29,6 @@ class CustomerEnhancedController extends BaseCrudController
 {
     /**
      * CustomerEnhancedController constructor.
-     *
-     * @param CustomerService $service
      */
     public function __construct(CustomerService $service)
     {
@@ -39,8 +37,6 @@ class CustomerEnhancedController extends BaseCrudController
 
     /**
      * Configure advanced query capabilities.
-     *
-     * @return array
      */
     protected function getQueryConfig(): array
     {
@@ -112,9 +108,7 @@ class CustomerEnhancedController extends BaseCrudController
     /**
      * Get validation rules for create and update operations.
      *
-     * @param string $action
-     * @param mixed $id
-     * @return array
+     * @param  mixed  $id
      */
     protected function getValidationRules(string $action, $id = null): array
     {
@@ -144,7 +138,7 @@ class CustomerEnhancedController extends BaseCrudController
         return [
             'type' => 'sometimes|in:individual,business',
             'name' => 'sometimes|string|max:255',
-            'email' => 'sometimes|email|unique:customers,email,' . $id,
+            'email' => 'sometimes|email|unique:customers,email,'.$id,
             'phone' => 'nullable|string|max:20',
             'organization_id' => 'sometimes|exists:organizations,id',
             'branch_id' => 'sometimes|exists:branches,id',
@@ -168,55 +162,70 @@ class CustomerEnhancedController extends BaseCrudController
      *     path="/api/v1/customers/enhanced",
      *     summary="Get all customers with advanced filtering",
      *     tags={"Customers (Enhanced)"},
+     *
      *     @OA\Parameter(
      *         name="filter[name]",
      *         in="query",
      *         description="Filter by name (partial match)",
      *         required=false,
+     *
      *         @OA\Schema(type="string")
      *     ),
+     *
      *     @OA\Parameter(
      *         name="filter[status]",
      *         in="query",
      *         description="Filter by exact status",
      *         required=false,
+     *
      *         @OA\Schema(type="string", enum={"active", "inactive", "suspended"})
      *     ),
+     *
      *     @OA\Parameter(
      *         name="search",
      *         in="query",
      *         description="Global search across name, email, phone, customer_code",
      *         required=false,
+     *
      *         @OA\Schema(type="string")
      *     ),
+     *
      *     @OA\Parameter(
      *         name="sort",
      *         in="query",
      *         description="Sort by field(s). Use '-' prefix for descending. Example: -created_at,name",
      *         required=false,
+     *
      *         @OA\Schema(type="string")
      *     ),
+     *
      *     @OA\Parameter(
      *         name="include",
      *         in="query",
      *         description="Eager load relations. Example: organization,branch,contacts",
      *         required=false,
+     *
      *         @OA\Schema(type="string")
      *     ),
+     *
      *     @OA\Parameter(
      *         name="page[number]",
      *         in="query",
      *         description="Page number",
      *         required=false,
+     *
      *         @OA\Schema(type="integer")
      *     ),
+     *
      *     @OA\Parameter(
      *         name="page[size]",
      *         in="query",
      *         description="Items per page",
      *         required=false,
+     *
      *         @OA\Schema(type="integer")
      *     ),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Successful operation"
@@ -234,10 +243,13 @@ class CustomerEnhancedController extends BaseCrudController
      *     path="/api/v1/customers/enhanced",
      *     summary="Create a new customer",
      *     tags={"Customers (Enhanced)"},
+     *
      *     @OA\RequestBody(
      *         required=true,
+     *
      *         @OA\JsonContent(
      *             required={"type", "name", "email", "organization_id", "branch_id"},
+     *
      *             @OA\Property(property="type", type="string", enum={"individual", "business"}),
      *             @OA\Property(property="name", type="string"),
      *             @OA\Property(property="email", type="string", format="email"),
@@ -247,6 +259,7 @@ class CustomerEnhancedController extends BaseCrudController
      *             @OA\Property(property="status", type="string", enum={"active", "inactive", "suspended"}),
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response=201,
      *         description="Customer created successfully"
@@ -268,19 +281,24 @@ class CustomerEnhancedController extends BaseCrudController
      *     path="/api/v1/customers/enhanced/{id}",
      *     summary="Get customer by ID",
      *     tags={"Customers (Enhanced)"},
+     *
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
      *         required=true,
+     *
      *         @OA\Schema(type="integer")
      *     ),
+     *
      *     @OA\Parameter(
      *         name="include",
      *         in="query",
      *         description="Eager load relations",
      *         required=false,
+     *
      *         @OA\Schema(type="string")
      *     ),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Successful operation"
@@ -302,20 +320,26 @@ class CustomerEnhancedController extends BaseCrudController
      *     path="/api/v1/customers/enhanced/{id}",
      *     summary="Update customer",
      *     tags={"Customers (Enhanced)"},
+     *
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
      *         required=true,
+     *
      *         @OA\Schema(type="integer")
      *     ),
+     *
      *     @OA\RequestBody(
      *         required=true,
+     *
      *         @OA\JsonContent(
+     *
      *             @OA\Property(property="name", type="string"),
      *             @OA\Property(property="email", type="string", format="email"),
      *             @OA\Property(property="status", type="string", enum={"active", "inactive", "suspended"}),
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Customer updated successfully"
@@ -341,12 +365,15 @@ class CustomerEnhancedController extends BaseCrudController
      *     path="/api/v1/customers/enhanced/{id}",
      *     summary="Delete customer",
      *     tags={"Customers (Enhanced)"},
+     *
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
      *         required=true,
+     *
      *         @OA\Schema(type="integer")
      *     ),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Customer deleted successfully"

@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 
 /**
  * Stock Ledger Repository
- * 
+ *
  * Handles append-only stock ledger operations.
  * Supports FIFO/FEFO, batch/lot/serial tracking.
  */
@@ -21,11 +21,6 @@ class StockLedgerRepository extends BaseRepository
 
     /**
      * Get current stock for a product at a branch.
-     *
-     * @param int $productId
-     * @param int $branchId
-     * @param int|null $warehouseId
-     * @return float
      */
     public function getCurrentStock(int $productId, int $branchId, ?int $warehouseId = null): float
     {
@@ -43,9 +38,6 @@ class StockLedgerRepository extends BaseRepository
     /**
      * Get stock by batch/lot numbers (for FIFO).
      *
-     * @param int $productId
-     * @param int $branchId
-     * @param int|null $warehouseId
      * @return \Illuminate\Support\Collection
      */
     public function getStockByBatch(int $productId, int $branchId, ?int $warehouseId = null)
@@ -68,9 +60,6 @@ class StockLedgerRepository extends BaseRepository
     /**
      * Get stock by expiry date (for FEFO).
      *
-     * @param int $productId
-     * @param int $branchId
-     * @param int|null $warehouseId
      * @return \Illuminate\Support\Collection
      */
     public function getStockByExpiry(int $productId, int $branchId, ?int $warehouseId = null)
@@ -93,7 +82,6 @@ class StockLedgerRepository extends BaseRepository
     /**
      * Get expired stock.
      *
-     * @param int|null $branchId
      * @return \Illuminate\Support\Collection
      */
     public function getExpiredStock(?int $branchId = null)
@@ -112,8 +100,6 @@ class StockLedgerRepository extends BaseRepository
     /**
      * Get near-expiry stock.
      *
-     * @param int $days
-     * @param int|null $branchId
      * @return \Illuminate\Support\Collection
      */
     public function getNearExpiryStock(int $days = 30, ?int $branchId = null)
@@ -134,17 +120,14 @@ class StockLedgerRepository extends BaseRepository
 
     /**
      * Record stock movement (append-only).
-     *
-     * @param array $data
-     * @return StockLedger
      */
     public function recordMovement(array $data): StockLedger
     {
         // Calculate total cost
         $data['total_cost'] = $data['quantity'] * $data['unit_cost'];
-        
+
         // Set created_by if not provided
-        if (!isset($data['created_by'])) {
+        if (! isset($data['created_by'])) {
             $data['created_by'] = auth()->id();
         }
 

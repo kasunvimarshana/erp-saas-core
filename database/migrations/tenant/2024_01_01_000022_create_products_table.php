@@ -37,7 +37,7 @@ return new class extends Migration
             $table->json('images')->nullable();
             $table->timestamps();
             $table->softDeletes();
-            
+
             $table->index(['tenant_id', 'sku']);
             $table->index(['tenant_id', 'is_active']);
         });

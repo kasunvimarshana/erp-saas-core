@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * Subscription Model
- * 
+ *
  * Manages tenant subscriptions and billing cycles.
  */
 class Subscription extends Model
@@ -50,8 +50,8 @@ class Subscription extends Model
      */
     public function isActive(): bool
     {
-        return $this->status === 'active' && 
-               (!$this->ends_at || $this->ends_at->isFuture());
+        return $this->status === 'active' &&
+               (! $this->ends_at || $this->ends_at->isFuture());
     }
 
     /**
@@ -59,8 +59,8 @@ class Subscription extends Model
      */
     public function onTrial(): bool
     {
-        return $this->status === 'trialing' && 
-               $this->trial_ends_at && 
+        return $this->status === 'trialing' &&
+               $this->trial_ends_at &&
                $this->trial_ends_at->isFuture();
     }
 

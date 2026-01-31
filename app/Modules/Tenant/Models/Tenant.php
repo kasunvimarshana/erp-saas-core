@@ -3,13 +3,13 @@
 namespace App\Modules\Tenant\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Tenant Model
- * 
+ *
  * Represents a tenant in the multi-tenant SaaS architecture.
  * Each tenant has isolated data and subscriptions.
  */

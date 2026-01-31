@@ -7,7 +7,7 @@ use App\Modules\CRM\Models\Customer;
 
 /**
  * Customer Repository
- * 
+ *
  * Handles data access for customer operations.
  */
 class CustomerRepository extends BaseRepository
@@ -19,9 +19,6 @@ class CustomerRepository extends BaseRepository
 
     /**
      * Find customer by customer code.
-     *
-     * @param string $code
-     * @return Customer|null
      */
     public function findByCode(string $code): ?Customer
     {
@@ -30,9 +27,6 @@ class CustomerRepository extends BaseRepository
 
     /**
      * Find customer by email.
-     *
-     * @param string $email
-     * @return Customer|null
      */
     public function findByEmail(string $email): ?Customer
     {
@@ -52,7 +46,6 @@ class CustomerRepository extends BaseRepository
     /**
      * Search customers by name or email.
      *
-     * @param string $query
      * @return \Illuminate\Database\Eloquent\Collection
      */
     public function search(string $query)

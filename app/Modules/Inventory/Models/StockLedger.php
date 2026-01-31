@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * Stock Ledger Model (Append-Only)
- * 
+ *
  * Immutable stock movement tracking.
  * Supports FIFO/FEFO, batch/lot/serial tracking, and expiry handling.
  * All stock movements are recorded as append-only entries for audit trail.
@@ -94,7 +94,7 @@ class StockLedger extends Model
     public function isIncoming(): bool
     {
         return in_array($this->transaction_type, [
-            'purchase', 'transfer_in', 'adjustment_in', 'return', 'production'
+            'purchase', 'transfer_in', 'adjustment_in', 'return', 'production',
         ]);
     }
 
@@ -104,7 +104,7 @@ class StockLedger extends Model
     public function isOutgoing(): bool
     {
         return in_array($this->transaction_type, [
-            'sale', 'transfer_out', 'adjustment_out'
+            'sale', 'transfer_out', 'adjustment_out',
         ]);
     }
 
@@ -121,8 +121,8 @@ class StockLedger extends Model
      */
     public function isNearExpiry(int $days = 30): bool
     {
-        return $this->expiry_date && 
-               $this->expiry_date->isFuture() && 
+        return $this->expiry_date &&
+               $this->expiry_date->isFuture() &&
                $this->expiry_date->diffInDays(now()) <= $days;
     }
 
@@ -148,7 +148,7 @@ class StockLedger extends Model
     public function scopeIncoming($query)
     {
         return $query->whereIn('transaction_type', [
-            'purchase', 'transfer_in', 'adjustment_in', 'return', 'production'
+            'purchase', 'transfer_in', 'adjustment_in', 'return', 'production',
         ]);
     }
 
@@ -158,7 +158,7 @@ class StockLedger extends Model
     public function scopeOutgoing($query)
     {
         return $query->whereIn('transaction_type', [
-            'sale', 'transfer_out', 'adjustment_out'
+            'sale', 'transfer_out', 'adjustment_out',
         ]);
     }
 }

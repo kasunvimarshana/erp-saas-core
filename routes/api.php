@@ -1,9 +1,9 @@
 <?php
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
 use App\Modules\CRM\Http\Controllers\CustomerController;
 use App\Modules\CRM\Http\Controllers\CustomerEnhancedController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,16 +21,17 @@ use App\Modules\CRM\Http\Controllers\CustomerEnhancedController;
  *     title="ERP SaaS Core API",
  *     version="1.0.0",
  *     description="Enterprise ERP SaaS Platform REST API",
+ *
  *     @OA\Contact(
  *         email="support@erp-saas.com"
  *     )
  * )
- * 
+ *
  * @OA\Server(
  *     url="http://localhost:8000",
  *     description="Local development server"
  * )
- * 
+ *
  * @OA\SecurityScheme(
  *     securityScheme="bearerAuth",
  *     type="http",

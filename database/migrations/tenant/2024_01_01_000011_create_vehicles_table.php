@@ -31,7 +31,7 @@ return new class extends Migration
             $table->enum('status', ['active', 'inactive'])->default('active');
             $table->timestamps();
             $table->softDeletes();
-            
+
             $table->index(['tenant_id', 'customer_id']);
             $table->index(['tenant_id', 'vin']);
         });
@@ -48,7 +48,7 @@ return new class extends Migration
             $table->string('performed_by')->nullable();
             $table->json('parts_used')->nullable();
             $table->timestamps();
-            
+
             $table->index(['vehicle_id', 'service_date']);
         });
     }
