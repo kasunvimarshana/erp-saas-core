@@ -43,9 +43,12 @@ class CustomerEnhancedController extends BaseCrudController
         return [
             // Define which fields can be filtered
             'allowedFilters' => [
-                'name',
+                'first_name',
+                'last_name',
+                'company_name',
                 'email',
                 'phone',
+                'mobile',
                 'customer_code',
                 AllowedFilter::exact('status'),
                 AllowedFilter::exact('type'),
@@ -69,7 +72,9 @@ class CustomerEnhancedController extends BaseCrudController
 
             // Define which fields can be used for sorting
             'allowedSorts' => [
-                'name',
+                'first_name',
+                'last_name',
+                'company_name',
                 'email',
                 'customer_code',
                 'created_at',
@@ -89,7 +94,7 @@ class CustomerEnhancedController extends BaseCrudController
 
             // Define sparse fieldsets
             'allowedFields' => [
-                'customers' => ['id', 'name', 'email', 'phone', 'customer_code', 'type', 'status', 'created_at'],
+                'customers' => ['id', 'first_name', 'last_name', 'company_name', 'email', 'phone', 'mobile', 'customer_code', 'type', 'status', 'created_at'],
                 'organizations' => ['id', 'name', 'code'],
                 'branches' => ['id', 'name', 'code'],
             ],
@@ -101,7 +106,7 @@ class CustomerEnhancedController extends BaseCrudController
             'perPage' => 15,
 
             // Fields for global search
-            'globalSearch' => ['name', 'email', 'phone', 'customer_code'],
+            'globalSearch' => ['first_name', 'last_name', 'company_name', 'email', 'phone', 'mobile', 'customer_code'],
         ];
     }
 
@@ -115,44 +120,52 @@ class CustomerEnhancedController extends BaseCrudController
         if ($action === 'create') {
             return [
                 'type' => 'required|in:individual,business',
-                'name' => 'required|string|max:255',
-                'email' => 'required|email|unique:customers,email',
+                // For individuals - require first_name and last_name
+                'first_name' => 'required_if:type,individual|string|max:255',
+                'last_name' => 'required_if:type,individual|string|max:255',
+                // For businesses - require company_name
+                'company_name' => 'required_if:type,business|string|max:255',
+                'email' => 'nullable|email|unique:customers,email',
                 'phone' => 'nullable|string|max:20',
-                'organization_id' => 'required|exists:organizations,id',
-                'branch_id' => 'required|exists:branches,id',
-                'status' => 'sometimes|in:active,inactive,suspended',
-                'address_line1' => 'nullable|string|max:255',
-                'address_line2' => 'nullable|string|max:255',
+                'mobile' => 'nullable|string|max:20',
+                'organization_id' => 'sometimes|exists:organizations,id',
+                'branch_id' => 'sometimes|exists:branches,id',
+                'status' => 'sometimes|in:active,inactive,blocked',
+                'billing_address' => 'nullable|string',
+                'shipping_address' => 'nullable|string',
                 'city' => 'nullable|string|max:100',
                 'state' => 'nullable|string|max:100',
                 'postal_code' => 'nullable|string|max:20',
                 'country' => 'nullable|string|max:100',
                 'tax_id' => 'nullable|string|max:50',
                 'credit_limit' => 'nullable|numeric|min:0',
-                'payment_terms' => 'nullable|string|max:100',
-                'notes' => 'nullable|string',
+                'payment_terms_days' => 'nullable|integer|min:0',
+                'preferences' => 'nullable|json',
                 'metadata' => 'nullable|json',
             ];
         }
 
         return [
             'type' => 'sometimes|in:individual,business',
-            'name' => 'sometimes|string|max:255',
+            'first_name' => 'sometimes|string|max:255',
+            'last_name' => 'sometimes|string|max:255',
+            'company_name' => 'sometimes|string|max:255',
             'email' => 'sometimes|email|unique:customers,email,'.$id,
             'phone' => 'nullable|string|max:20',
+            'mobile' => 'nullable|string|max:20',
             'organization_id' => 'sometimes|exists:organizations,id',
             'branch_id' => 'sometimes|exists:branches,id',
-            'status' => 'sometimes|in:active,inactive,suspended',
-            'address_line1' => 'nullable|string|max:255',
-            'address_line2' => 'nullable|string|max:255',
+            'status' => 'sometimes|in:active,inactive,blocked',
+            'billing_address' => 'nullable|string',
+            'shipping_address' => 'nullable|string',
             'city' => 'nullable|string|max:100',
             'state' => 'nullable|string|max:100',
             'postal_code' => 'nullable|string|max:20',
             'country' => 'nullable|string|max:100',
             'tax_id' => 'nullable|string|max:50',
             'credit_limit' => 'nullable|numeric|min:0',
-            'payment_terms' => 'nullable|string|max:100',
-            'notes' => 'nullable|string',
+            'payment_terms_days' => 'nullable|integer|min:0',
+            'preferences' => 'nullable|json',
             'metadata' => 'nullable|json',
         ];
     }

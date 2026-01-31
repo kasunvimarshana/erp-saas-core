@@ -78,14 +78,14 @@ class CrudFrameworkTest extends TestCase
     public function test_enhanced_customer_routes_are_registered()
     {
         $routes = \Illuminate\Support\Facades\Route::getRoutes();
-        $routeNames = [];
+        $routeUris = [];
 
         foreach ($routes as $route) {
-            $routeNames[] = $route->uri();
+            $routeUris[] = $route->uri();
         }
 
         // Check that enhanced customer routes exist
-        $this->assertContains('api/v1/customers-enhanced', $routeNames);
+        $this->assertContains('api/v1/customers-enhanced', $routeUris);
     }
 
     public function test_base_repository_uses_spatie_query_builder()
